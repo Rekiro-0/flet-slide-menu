@@ -90,15 +90,16 @@ class _ContentArea(ft.GridView):
             padding=0, 
             cache_extent=500, #eliminates white  areas when sliding
         )
-        print(f"Page height: {page.height}")
-        print(f"Page width: {page.width}")
 
         self._prev_pixels = 0
         self._page = page
         self._current_frame = 0
         self.on_scroll = self._on_scroll
+        self._key_counter = 0
 
     def add_frame_content(self, frame: ft.Stack):
+        frame.key = f"frame_{self._key_counter}"
+        self._key_counter += 1
         self.controls.append(frame)
 
     def scroll_to_frame(self, frame_number):
@@ -108,8 +109,9 @@ class _ContentArea(ft.GridView):
         )
         self.update()
 
+
+
     def _on_scroll(self, event:  ft.OnScrollEvent):
-        print(event)
         if event.event_type == 'end':
             if self._prev_pixels == event.pixels:
                 return
@@ -161,3 +163,6 @@ class SlideNavigation(ft.Stack):
     def add_frame(self, frame: ft.Stack, icon_src: str):
         self._conten_area.add_frame_content(frame)
         self._buttons_bar.add_button(icon_src)
+
+    def scroll_to_frame(self, frame_number: int):
+        self._conten_area.scroll_to_frame(frame_number)
